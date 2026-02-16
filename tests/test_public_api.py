@@ -1,33 +1,50 @@
 import pytest
-from src.api_client import JsonPlaceholderClient
+from src.api_client import AgifyClient
 
-client = JsonPlaceholderClient()
+client = AgifyClient()
 
-def test_get_posts_status_200():
-    r = client.get_posts()
+
+@pytest.mark.parametrize("name", ["michael", "sarah", "andrei"])
+def test_predict_age_status_200(name):
+    r = client.predict_age(name)
     assert r.status_code == 200
 
-def test_get_posts_returns_list():
-    r = client.get_posts()
-    data = r.json()
-    assert isinstance(data, list)
-    assert len(data) > 0
-    assert "id" in data[0]
-    assert "title" in data[0]
 
-@pytest.mark.parametrize("post_id", [1, 2, 3, 50, 100])
-def test_get_post_by_id(post_id):
-    r = client.get_post(post_id)
-    assert r.status_code == 200
+@pytest.mark.parametrize("name", ["michael", "sarah", "andrei"])
+def test_predict_age_response_shape(name):
+    r = client.predict_age(name)
     data = r.json()
-    assert data["id"] == post_id
-    assert "title" in data
-    assert "body" in data
 
-@pytest.mark.parametrize("post_id", [1, 2, 3])
-def test_comments_for_post(post_id):
-    r = client.get_comments_for_post(post_id)
+    assert data["name"] == name
+    assert "age" in data
+    assert "count" in data
+    assert isinstance(data["count"], int)
+    assert (data["age"] is None) or isinstance(data["age"], int)
+
+
+@pytest.mark.parametrize(
+    "name,country_id",
+    [
+        ("michael", "US"),
+        ("michael", "GB"),
+        ("andrei", "RO"),
+    ],
+)
+def test_predict_age_with_country_id_has_expected_shape(name, country_id):
+    r = client.predict_age(name, country_id=country_id)
     assert r.status_code == 200
+
     data = r.json()
-    assert isinstance(data, list)
-    assert all(item["postId"] == post_id for item in data)
+    assert data["name"] == name
+    assert "age" in data
+    assert "count" in data
+
+
+def test_predict_age_missing_name_returns_200_and_expected_keys():
+    r = client.predict_age("")
+    assert r.status_code == 200
+
+    data = r.json()
+    assert "name" in data
+    assert "age" in data
+    assert "count" in data

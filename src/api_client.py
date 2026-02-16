@@ -1,13 +1,12 @@
 import requests
+from typing import Optional
 
-class JsonPlaceholderClient:
-    BASE_URL = "https://jsonplaceholder.typicode.com"
 
-    def get_posts(self):
-        return requests.get(f"{self.BASE_URL}/posts", timeout=15)
+class AgifyClient:
+    BASE_URL = "https://api.agify.io"
 
-    def get_post(self, post_id: int):
-        return requests.get(f"{self.BASE_URL}/posts/{post_id}", timeout=15)
-
-    def get_comments_for_post(self, post_id: int):
-        return requests.get(f"{self.BASE_URL}/comments", params={"postId": post_id}, timeout=15)
+    def predict_age(self, name: str, country_id: Optional[str] = None):
+        params = {"name": name}
+        if country_id:
+            params["country_id"] = country_id
+        return requests.get(self.BASE_URL, params=params, timeout=15)
