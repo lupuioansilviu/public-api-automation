@@ -48,12 +48,14 @@ Requests
 
 ## Test cases:
 
-| ID | Test Name | Endpoint | Validation |
-| API-01 | Predict age returns 200 (parametrized) | `GET /?name={name}` | Status code = 200 |
-| API-02 | Predict age response schema (parametrized) | `GET /?name={name}` | Keys exist (`name`,`age`,`count`); types validated (`count` int, `age` int/null) |
-| API-03 | Predict age with country_id schema (parametrized) | `GET /?name={name}&country_id={country}` | Status 200; keys exist; `name` matches request |
-| API-04 | Predict age with empty name returns expected keys | `GET /?name=` | Status 200; keys exist; no error response |
+## Test Cases
 
+| ID     | Test Name                                        | Endpoint                              | Validation |
+|--------|--------------------------------------------------|---------------------------------------|------------|
+| API-01 | Predict age returns 200 (parametrized)           | `GET /?name={name}`                   | Status code = 200 |
+| API-02 | Predict age response schema (parametrized)       | `GET /?name={name}`                   | Keys exist (`name`, `age`, `count`); `count` is int; `age` is int or null |
+| API-03 | Predict age with country_id schema (parametrized)| `GET /?name={name}&country_id={country}` | Status 200; keys exist; `name` matches request |
+| API-04 | Predict age with empty name returns expected keys| `GET /?name=`                         | Status 200; keys exist; no error response |
 
 ## Demo Gif
 
